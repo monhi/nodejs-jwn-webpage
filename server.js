@@ -44,7 +44,6 @@ class HandlerGenerator {
   }
   index (req, res) 
   {
-    console.log(3);
     res.render("index");
   }
 }

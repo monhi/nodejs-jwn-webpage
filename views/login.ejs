@@ -5,16 +5,19 @@
 </head>
 
 <body>
-  <h1>Login</h1>
-  <p>Default username is : admin</p>
-  <p>Default password is : password</p>
+  <div id="container"   >
+    <h1>Login</h1>
+    <p>Default username is : admin</p>
+    <p>Default password is : password</p>
+  
+    <form>
+      Username: <input id="username" />
+      Password: <input type="password" id="password" />
+      <input type="submit" value="Login" />
+    </form>
+    <div class="result"></div>
+  </div>
 
-  <form>
-    Username: <input id="username" />
-    Password: <input type="password" id="password" />
-    <input type="submit" value="Login" />
-  </form>
-  <div class="result"></div>
 
 
   <script>
@@ -45,17 +48,20 @@
             sessionStorage.setItem('jwt', token);
             fetch("/", {
               method: "GET",
-              redirect:'follow',
+              redirect: 'follow',
               headers: {
                 'x-access-token': token
               }
             })
-            .then(response => {
-        // HTTP 301 response
-    })
-    .catch(function(err) {
-        console.info(err + " url: " + url);
-    });
+              .then(dataWrappedByPromise => dataWrappedByPromise.text())
+              .then(data => {
+                //Redirect is the URL inside the text of the response promise
+                //window.location.replace(data);
+                document.getElementById('container').innerHTML = data;
+              })
+              .catch(function (err) {
+                console.info(err + " url: " + url);
+              });
 
           }
         })

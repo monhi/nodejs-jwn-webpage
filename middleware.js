@@ -3,7 +3,6 @@ const config = require('./config.js');
 
 let checkToken = (req, res, next) => {
   let token = req.headers['x-access-token'] || req.headers['authorization'] || ''; // Express headers are auto converted to lowercase
-  console.log("1");
   if (token) {
     if (token.startsWith('Bearer ')) {
       // Remove Bearer from string
@@ -17,7 +16,6 @@ let checkToken = (req, res, next) => {
           message: 'Token is not valid'
         });
       } else {
-        console.log(2);
         req.decoded = decoded;
         next();
       }
