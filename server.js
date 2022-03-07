@@ -1,8 +1,12 @@
 const express 		= require('express');
 const bodyParser 	= require('body-parser');
-let jwt 			= require('jsonwebtoken');
-let config 			= require('./config');
+let jwt 			    = require('jsonwebtoken');
+let config 			  = require('./config');
 let middleware 		= require('./middleware');
+const { join }    = require("path");
+
+
+
 
 class HandlerGenerator {
   login (req, res) {
@@ -38,17 +42,21 @@ class HandlerGenerator {
       });
     }
   }
-  index (req, res) {
-    res.json({
-      success: true,
-      message: 'Index page'
-    });
+  index (req, res) 
+  {
+    console.log(3);
+    res.render("index");
   }
 }
 
 // Starting point of the server
-function main () {
+function main () 
+{
   let app = express(); // Export app for other routes to use
+
+  app.set("views", join(__dirname, "views"));
+  app.set("view engine", "ejs");
+
   let handlers = new HandlerGenerator();
   const port = process.env.PORT || 8000;
   app.use(bodyParser.urlencoded({ // Middleware

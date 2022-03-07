@@ -1,0 +1,68 @@
+<html>
+
+<head>
+  <title>Login</title>
+</head>
+
+<body>
+  <h1>Login</h1>
+  <p>Default username is : admin</p>
+  <p>Default password is : password</p>
+
+  <form>
+    Username: <input id="username" />
+    Password: <input type="password" id="password" />
+    <input type="submit" value="Login" />
+  </form>
+  <div class="result"></div>
+
+
+  <script>
+    document.addEventListener("submit", sendData);
+    function sendData(e) {
+      e.preventDefault();
+      const u = document.querySelector("#username").value;
+      const p = document.querySelector("#password").value;
+
+      fetch("Login", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: u,
+          password: p
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          const { message, success, token } = data;
+          if (success == false) {
+            document.querySelector(".result").innerText = `${message}`;
+          }
+          else {
+            sessionStorage.setItem('jwt', token);
+            fetch("/", {
+              method: "GET",
+              redirect:'follow',
+              headers: {
+                'x-access-token': token
+              }
+            })
+            .then(response => {
+        // HTTP 301 response
+    })
+    .catch(function(err) {
+        console.info(err + " url: " + url);
+    });
+
+          }
+        })
+        .catch(err => console.log(err));
+    }
+  </script>
+
+</body>
+
+</html>
