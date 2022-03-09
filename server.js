@@ -42,10 +42,30 @@ class HandlerGenerator {
       });
     }
   }
-  index (req, res) 
-  {
-    res.render("index");
+
+  gettoken (req, res) {
+
+        res.json({
+          success: true,
+          message: 'success!',
+          token: 'This is a secret token. keep it safe bro'
+        });
   }
+
+  index(req,res)
+  {
+
+  }
+  
+  logout(req,res)
+  {
+    res.json({
+      success: true,
+      message: 'success!',
+      token: 'This is a secret token. keep it safe bro'
+    });    
+  }
+
 }
 
 // Starting point of the server
@@ -64,6 +84,8 @@ function main ()
   app.use(bodyParser.json());
   // Routes & Handlers
   app.post('/login', handlers.login);
+  app.post('/logout',middleware.checkToken,handlers.logout);
+  app.post('/GetToken',middleware.checkToken,handlers.gettoken);
   app.get('/', middleware.checkToken, handlers.index);
   app.listen(port, () => console.log(`Server is listening on port: ${port}`));
 }

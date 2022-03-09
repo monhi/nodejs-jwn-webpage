@@ -5,25 +5,20 @@
 </head>
 
 <body>
-  <div id="container"   >
+  <div id="container">
     <h1>Login</h1>
     <p>Default username is : admin</p>
     <p>Default password is : password</p>
-  
-    <form>
-      Username: <input id="username" />
-      Password: <input type="password" id="password" />
-      <input type="submit" value="Login" />
-    </form>
+
+
+    Username: <input id="username" />
+    Password: <input type="password" id="password" />
+    <button onclick=sendData()>Login</button>
     <div class="result"></div>
   </div>
 
-
-
   <script>
-    document.addEventListener("submit", sendData);
-    function sendData(e) {
-      e.preventDefault();
+    function sendData() {
       const u = document.querySelector("#username").value;
       const p = document.querySelector("#password").value;
 
@@ -46,27 +41,88 @@
           }
           else {
             sessionStorage.setItem('jwt', token);
-            fetch("/", {
-              method: "GET",
-              redirect: 'follow',
-              headers: {
-                'x-access-token': token
-              }
-            })
-              .then(dataWrappedByPromise => dataWrappedByPromise.text())
-              .then(data => {
-                //Redirect is the URL inside the text of the response promise
-                //window.location.replace(data);
-                document.getElementById('container').innerHTML = data;
-              })
-              .catch(function (err) {
-                console.info(err + " url: " + url);
-              });
+            document.getElementById('container').innerHTML = `
+              <html>
+              <head>
+                <title> Express </title>
+              </head>
+              <body>  
+                <h1> Express </h1>
+                <p> Welcome to Express </p>
+                <p> 
+                  <button onclick=GetToken() >Get Token</button>
+                </p>
+                <p>                 
+                <button onclick=Logout() >Log out</button>
+              </p>
+                <div class="result"></div>
 
+              </body>
+             </html>
+            `;
           }
         })
         .catch(err => console.log(err));
     }
+
+    function GetToken() {
+
+
+      fetch("GetToken", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "x-access-token": sessionStorage.getItem('jwt')
+        },
+        body: JSON.stringify({})
+      })
+        .then(res => res.json())
+        .then(data => {
+          const { message, success, token } = data;
+          if (success == false) {
+            document.querySelector(".result").innerText = `${message}`;
+          }
+          else {
+            document.querySelector(".result").innerText = `${token}`;
+          }
+        })
+        .catch(err => console.log(err));
+    }
+
+    function Logout() {
+      fetch("Logout", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "x-access-token": sessionStorage.getItem('jwt')
+        },
+        body: JSON.stringify({})
+      })
+        .then(res => res.json())
+        .then(data => {
+          const { message, success } = data;
+          if (success == false) {
+            document.querySelector(".result").innerText = `${message}`;
+          }
+          else {
+            sessionStorage.removeItem('jwt');
+            document.getElementById('container').innerHTML = `
+            <h1>Login</h1>
+            <p>Default username is : admin</p>
+            <p>Default password is : password</p>
+
+            Username: <input id="username" />
+            Password: <input type="password" id="password" />
+            <button onclick=sendData()>Login</button>
+            <div class="result"></div>
+            `;
+          }
+        })
+        .catch(err => console.log(err));
+    }
+
   </script>
 
 </body>
